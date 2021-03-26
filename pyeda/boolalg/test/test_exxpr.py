@@ -285,3 +285,18 @@ def test_box():
     assert Expression.box([]) is Zero
     assert Expression.box(42) is One
 
+
+if __name__ == '__main__':
+    test_exprnode_constants()
+    test_exprnode_errors()
+    test_expr()
+    test_to_ast()
+    test_not()
+    test_or()
+    test_and()
+    test_xor()
+    test_equal()
+    test_implies()
+    test_ite()
+    test_is_zero_one()
+    test_box()

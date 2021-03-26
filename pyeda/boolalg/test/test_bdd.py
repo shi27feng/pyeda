@@ -14,6 +14,7 @@ zero = BinaryDecisionDiagram.box(0)
 one = BinaryDecisionDiagram.box(1)
 a, b, c, d, w, x, y, z = map(bddvar, 'abcdwxyz')
 
+
 def test_expr2bdd():
     assert expr2bdd(expr("a ^ b ^ c")) is a ^ b ^ c
 
@@ -44,6 +45,7 @@ def test_expr2bdd():
     assert f.node.hi.hi.lo == BDDNODEZERO
     assert f.node.hi.hi.hi == BDDNODEONE
 
+
 def test_bdd2expr():
     ex = bdd2expr(a ^ b ^ c, conj=False)
     assert ex.equivalent(expr("a ^ b ^ c"))
@@ -53,12 +55,15 @@ def test_bdd2expr():
     assert ex.equivalent(expr("a ^ b ^ c"))
     assert type(ex) is AndOp and ex.depth == 2
 
+
 def test_upoint2bddpoint():
     upoint = (frozenset([a.uniqid, c.uniqid]), frozenset([b.uniqid, d.uniqid]))
     assert upoint2bddpoint(upoint) == {a: 0, b: 1, c: 0, d: 1}
 
+
 def test_ite():
     assert ite(a, b, c) is a & b | ~a & c
+
 
 def test_const():
     assert bool(zero) is False
@@ -69,6 +74,7 @@ def test_const():
     assert str(one) == '1'
     assert repr(zero) == '0'
     assert repr(one) == '1'
+
 
 def test_boolfunc():
     # __invert__, __or__, __and__, __xor__
@@ -112,6 +118,7 @@ def test_boolfunc():
     assert BinaryDecisionDiagram.box("") is zero
     assert BinaryDecisionDiagram.box("foo") is one
 
+
 def test_traverse():
     f = a & b | a & c | b & c
     path1 = [node.root for node in f.dfs_preorder()]
@@ -124,10 +131,12 @@ def test_traverse():
     # a, b(0, c), b(c, 1), 0, c, 1
     assert path3 == [a.uniqid, b.uniqid, b.uniqid, -1, c.uniqid, -2]
 
+
 def test_equivalent():
     f = a & b | ~a & c
     g = (~a | b) & (a | c)
     assert f.equivalent(g)
+
 
 def test_satisfy():
     f = a & b | a & c | b & c
@@ -140,4 +149,16 @@ def test_satisfy():
     assert f.satisfy_one() == {a: 0, b: 1, c: 1}
     assert (a & ~a).satisfy_one() is None
     assert (a | ~a).satisfy_one() == {}
+
+
+if __name__ == '__main__':
+    test_expr2bdd()
+    test_bdd2expr()
+    test_upoint2bddpoint()
+    test_ite()
+    test_const()
+    test_boolfunc()
+    test_traverse()
+    test_equivalent()
+    test_satisfy()
 

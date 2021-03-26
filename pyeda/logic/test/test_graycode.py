@@ -19,3 +19,7 @@ def test_gray2bin():
     bnums = [B.vrestrict({G: uint2exprs(i, 4)}).to_uint() for i in gnums]
     assert bnums == list(range(16))
 
+
+if __name__ == '__main__':
+    test_bin2gray()
+    test_gray2bin()

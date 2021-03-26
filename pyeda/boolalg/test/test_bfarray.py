@@ -17,10 +17,12 @@ X = exprvars('x', 4)
 Y = exprvars('y', 4)
 a, b, c, d, w, x, y, z = map(exprvar, 'abcdwxyz')
 
+
 def test_fcat():
     # expected Function or farray
     assert_raises(TypeError, fcat, X, Y, 0)
     assert str(fcat(X[0], X[2:], Y[3], Y[:-2])) == "farray([x[0], x[2], x[3], y[3], y[0], y[1]])"
+
 
 def test_farray():
     # expected shape volume to match items
@@ -225,6 +227,7 @@ farray([[[z[0,0,0], z[0,0,1]],
     assert parts[2].equivalent(~X[0] & X[1])
     assert parts[3].equivalent(X[0] & X[1])
 
+
 def test_dims2shape():
     assert_raises(ValueError, exprzeros)
     assert_raises(ValueError, exprzeros, -1)
@@ -233,3 +236,8 @@ def test_dims2shape():
     assert_raises(ValueError, exprzeros, (1, 0))
     assert_raises(TypeError, exprzeros, 'foo')
 
+
+if __name__ == '__main__':
+    test_fcat()
+    test_farray()
+    test_dims2shape()

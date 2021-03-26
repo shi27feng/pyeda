@@ -21,6 +21,7 @@ from pyeda.boolalg.expr import exprvar
 a, b, c, d = map(exprvar, 'abcd')
 aa, bb, cc, dd = a.uniqid, b.uniqid, c.uniqid, d.uniqid
 
+
 def test_var():
     assert_raises(TypeError, var, 42)
     assert_raises(ValueError, var, tuple())
@@ -28,6 +29,7 @@ def test_var():
     assert_raises(TypeError, var, 'a', 'index')
     assert_raises(TypeError, var, 'a', ('index', ))
     assert_raises(ValueError, var, 'a', (-1, ))
+
 
 def test_num2point():
     assert_raises(TypeError, num2point, 1.0, [a, b])
@@ -51,6 +53,7 @@ def test_num2point():
     assert num2point(0xE, [a, b, c, d]) == {a: 0, b: 1, c: 1, d: 1}
     assert num2point(0xF, [a, b, c, d]) == {a: 1, b: 1, c: 1, d: 1}
 
+
 def test_num2upoint():
     assert num2upoint(0x0, [a, b, c, d]) == ({aa, bb, cc, dd}, set())
     assert num2upoint(0x1, [a, b, c, d]) == ({bb, cc, dd}, {aa})
@@ -68,6 +71,7 @@ def test_num2upoint():
     assert num2upoint(0xD, [a, b, c, d]) == ({bb}, {aa, cc, dd})
     assert num2upoint(0xE, [a, b, c, d]) == ({aa}, {bb, cc, dd})
     assert num2upoint(0xF, [a, b, c, d]) == (set(), {aa, bb, cc, dd})
+
 
 def test_num2term():
     assert_raises(TypeError, num2term, 1.0, [a, b])
@@ -108,6 +112,7 @@ def test_num2term():
     assert num2term(0xE, [a, b, c, d], conj=True) == ( a, ~b, ~c, ~d)
     assert num2term(0xF, [a, b, c, d], conj=True) == (~a, ~b, ~c, ~d)
 
+
 def test_point2upoint():
     assert point2upoint({a: 0, b: 0, c: 0, d: 0}) == ({aa, bb, cc, dd}, set())
     assert point2upoint({a: 1, b: 0, c: 0, d: 0}) == ({bb, cc, dd}, {aa})
@@ -125,6 +130,7 @@ def test_point2upoint():
     assert point2upoint({a: 1, b: 0, c: 1, d: 1}) == ({bb}, {aa, cc, dd})
     assert point2upoint({a: 0, b: 1, c: 1, d: 1}) == ({aa}, {bb, cc, dd})
     assert point2upoint({a: 1, b: 1, c: 1, d: 1}) == (set(), {aa, bb, cc, dd})
+
 
 def test_point2term():
     assert set(point2term({a: 0, b: 0, c: 0, d: 0}, conj=False)) == {~a, ~b, ~c, ~d}
@@ -167,7 +173,20 @@ def test_iter_points():
 def test_iter_upoints():
     assert list(iter_upoints([a, b])) == [({aa, bb}, set()), ({bb}, {aa}), ({aa}, {bb}), (set(), {aa, bb})]
 
+
 def test_iter_terms():
     assert list(set(term) for term in iter_terms([a, b], conj=False)) == [{~a, ~b}, {a, ~b}, {~a, b}, {a, b}]
     assert list(set(term) for term in iter_terms([a, b], conj=True)) == [{a, b}, {~a, b}, {a, ~b}, {~a, ~b}]
 
+
+if __name__ == '__main__':
+    test_var()
+    test_num2point()
+    test_num2upoint()
+    test_num2term()
+    test_point2upoint()
+    test_point2term()
+    test_iter_points()
+    test_iter_upoints()
+    test_iter_terms()
+    

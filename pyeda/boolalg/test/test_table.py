@@ -31,6 +31,7 @@ d c b a
 1 1 1 1 : 0
 """
 
+
 def test_unate():
     # ~c & (~a | ~b)
     f = truthtable([aa, bb, cc], "11100000")
@@ -64,10 +65,12 @@ def test_unate():
     assert f.is_binate(bb)
     assert f.is_binate(cc)
 
+
 def test_ttvar():
     assert aa.name == 'a'
     assert aa.names == ('a', )
     assert aa.indices == tuple()
+
 
 def test_table():
     assert truthtable([], [0]).is_zero()
@@ -98,6 +101,7 @@ def test_table():
     assert tt.satisfy_count() == 8
 
     assert truthtable((a, b), "0000").satisfy_one() == None
+
 
 def test_ops():
     f = truthtable([aa, bb], "0001")
@@ -132,3 +136,9 @@ def test_ops():
     assert str(f & g) == "c b a\n0 0 0 : 0\n0 0 1 : 0\n0 1 0 : 0\n0 1 1 : 1\n1 0 0 : -\n1 0 1 : -\n1 1 0 : 0\n1 1 1 : 0\n"
     assert str(f ^ g) == "c b a\n0 0 0 : 0\n0 0 1 : 1\n0 1 0 : -\n0 1 1 : 0\n1 0 0 : -\n1 0 1 : -\n1 1 0 : 0\n1 1 1 : 0\n"
 
+
+if __name__ == '__main__':
+    test_unate()
+    test_ttvar()
+    test_table()
+    test_ops()

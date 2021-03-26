@@ -20,12 +20,14 @@ a, b, c, d, e, p, q, s = map(exprvar, 'abcdepqs')
 X = exprvars('x', 16)
 Y = exprvars('y', 16, 16, 16)
 
+
 def test_misc():
     f = a & b | a & c | b & c
 
     assert f.smoothing(a).equivalent(b | c)
     assert f.consensus(a).equivalent(b & c)
     assert f.derivative(a).equivalent(b & ~c | ~b & c)
+
 
 def test_issue81():
     # Or(x) = x
@@ -71,6 +73,7 @@ def test_issue81():
     assert str(Xnor(Xor(a, b))) == "Not(Xor(a, b))"
     assert str(Xnor(Xnor(a, b))) == "Xor(a, b)"
 
+
 def test_expr():
     assert expr(a) is a
     f = a & ~b | c ^ ~d
@@ -85,6 +88,7 @@ def test_expr():
     assert expr(['foo', 'bar']) is One
     assert expr("a ^ b").to_nnf().equivalent(~a & b | a & ~b)
     assert str(expr("a ^ 0", simplify=False)) == "Xor(a, 0)"
+
 
 def test_expr2dimacssat():
     assert_raises(ValueError, expr2dimacssat, Xor(0, a, simplify=False))
@@ -102,6 +106,7 @@ def test_expr2dimacssat():
     ret = expr2dimacssat(Not(a | ~b))
     assert ret in {'p sat 2\n-(+(1 -2))', 'p sat 2\n-(+(-2 1))'}
 
+
 def test_box():
     assert Expression.box(0) is Zero
     assert Expression.box('0') is Zero
@@ -109,6 +114,7 @@ def test_box():
     assert Expression.box('1') is One
     assert Expression.box(a) is a
     assert Expression.box(42) is One
+
 
 def test_nor():
     assert Nor() is One
@@ -130,6 +136,7 @@ def test_nor():
 
     assert Nor(a, b).equivalent(~a & ~b)
 
+
 def test_nand():
     assert Nand() is Zero
     assert Nand(a) is ~a
@@ -150,6 +157,7 @@ def test_nand():
 
     assert Nand(a, b).equivalent(~a | ~b)
 
+
 def test_onehot0():
     assert OneHot0(0, 0, 0) is One
     assert OneHot0(0, 0, 1) is One
@@ -161,6 +169,7 @@ def test_onehot0():
     assert OneHot0(1, 1, 1) is Zero
     assert OneHot0(a, b, c, conj=False).equivalent((~a | ~b) & (~a | ~c) & (~b | ~c))
     assert OneHot0(a, b, c, conj=True).equivalent((~a | ~b) & (~a | ~c) & (~b | ~c))
+
 
 def test_onehot():
     assert OneHot(0, 0, 0) is Zero
@@ -174,6 +183,7 @@ def test_onehot():
     assert OneHot(a, b, c, conj=False).equivalent((~a | ~b) & (~a | ~c) & (~b | ~c) & (a | b | c))
     assert OneHot(a, b, c, conj=True).equivalent((~a | ~b) & (~a | ~c) & (~b | ~c) & (a | b | c))
 
+
 def test_nhot():
     assert NHot(2, 0, 0, 0) is Zero
     assert NHot(2, 0, 0, 1) is Zero
@@ -183,6 +193,7 @@ def test_nhot():
     assert NHot(2, 1, 0, 1) is One
     assert NHot(2, 1, 1, 0) is One
     assert NHot(2, 1, 1, 1) is Zero
+
 
 def test_majority():
     assert Majority(0, 0, 0) is Zero
@@ -196,11 +207,13 @@ def test_majority():
     assert Majority(a, b, c, conj=False).equivalent(a & b | a & c | b & c)
     assert Majority(a, b, c, conj=True).equivalent(a & b | a & c | b & c)
 
+
 def test_achilles_heel():
     assert AchillesHeel(a, b).equivalent(a | b)
     assert AchillesHeel(a, b, c, d).equivalent((a | b) & (c | d))
     # expected an even number of arguments
     assert_raises(ValueError, AchillesHeel, a, b, c)
+
 
 def test_mux():
     assert Mux([One] * 4, [a,b]).equivalent(One)
@@ -209,6 +222,7 @@ def test_mux():
     assert Mux(X[:2], a).equivalent(~a & X[0] | a & X[1])
     # Expected at least ? select bits
     assert_raises(ValueError, Mux, X, [a,b])
+
 
 def test_ops():
     # __xor__
@@ -219,6 +233,7 @@ def test_ops():
     assert (a >> 1).equivalent(One)
     assert (1 >> a).equivalent(a)
     assert (a >> b).equivalent(~a | b)
+
 
 def test_const():
     assert bool(Zero) is False
@@ -248,6 +263,7 @@ def test_const():
     assert Zero.depth == 0
     assert One.depth == 0
 
+
 def test_var():
     # Function
     assert a.support == {a}
@@ -270,6 +286,7 @@ def test_var():
     assert a.depth == 0
     assert a.is_cnf()
 
+
 def test_comp():
     # Function
     assert (~a).support == {a}
@@ -287,6 +304,7 @@ def test_comp():
     assert (~a).depth == 0
     assert (~a).is_cnf()
 
+
 def test_not():
     # Function
     assert Not(~a | b).support == {a, b}
@@ -303,6 +321,7 @@ def test_not():
 
     assert Not(a | ~a) is Zero
     assert Not(a & ~a) is One
+
 
 def test_or():
     # Function
@@ -367,6 +386,7 @@ def test_or():
     assert (~a | a).equivalent(One)
     assert (a | ~a).equivalent(One)
 
+
 def test_and():
     # Function
     assert (~a & b).support == {a, b}
@@ -430,6 +450,7 @@ def test_and():
     assert (~a & a).equivalent(Zero)
     assert (a & ~a).equivalent(Zero)
 
+
 def test_xor():
     # Function
     assert Xor(~a, b).support == {a, b}
@@ -476,6 +497,7 @@ def test_xor():
 
     assert str(Xor(a, 0, simplify=False)) == "Xor(a, 0)"
 
+
 def test_xnor():
     # Function
     assert Xnor(~a, b).support == {a, b}
@@ -508,6 +530,7 @@ def test_xnor():
     assert Xnor(~a, a) is Zero
 
     assert str(Xnor(a, 0, simplify=False)) == "Not(Xor(a, 0))"
+
 
 def test_equal():
     # Function
@@ -542,6 +565,7 @@ def test_equal():
 
     assert Equal(a, b, c).to_nnf().equivalent(~a & ~b & ~c | a & b & c)
 
+
 def test_unequal():
     # Function
     assert Unequal(~a, b).support == {a, b}
@@ -575,6 +599,7 @@ def test_unequal():
 
     assert Unequal(a, b, c).to_nnf().equivalent((~a | ~b | ~c) & (a | b | c))
 
+
 def test_implies():
     # Function
     assert Implies(~p, q).support == {p, q}
@@ -606,6 +631,7 @@ def test_implies():
     assert str(f) == "Implies(p, 1)"
 
     assert Implies(p, q).to_nnf().equivalent(~p | q)
+
 
 def test_ite():
     # Function
@@ -652,6 +678,7 @@ def test_ite():
     f = ITE(s, 1, 1, simplify=False)
     assert str(f) == "ITE(s, 1, 1)"
 
+
 def test_expand():
     assert a.expand() is a
 
@@ -668,6 +695,7 @@ def test_expand():
 
     f = a.expand([b, c], conj=True)
     assert len(f.xs) == 4 and f.equivalent(a)
+
 
 def test_satisfy():
     # Typical cases
@@ -706,6 +734,7 @@ def test_satisfy():
         assert f.satisfy_one() == {a: 1, b: 0, c: 0}
         assert g.satisfy_one() == {a: 1, b: 0, c: 0}
 
+
 def test_depth():
     assert (a | b).depth == 1
     assert (a | (b & c)).depth == 2
@@ -735,6 +764,7 @@ def test_depth():
     assert ITE(s, a | b, b).depth == 2
     assert ITE(s, a | b, Xor(a, b)).depth == 2
 
+
 def test_nf():
     f = a ^ b ^ c
     g = a & b | a & c | b & c
@@ -745,10 +775,12 @@ def test_nf():
     assert f_dnf.equivalent(Or(And(~a, ~b, c), And(~a, b, ~c), And(a, ~b, ~c), And(a, b, c)))
     assert f_cnf.equivalent(And(Or(a, b, c), Or(a, ~b, ~c), Or(~a, b, ~c), Or(~a, ~b, c)))
 
+
 def test_is_nf():
     assert And(a, b, c).is_cnf()
     assert And(a, (b | c), (c | d)).is_cnf()
     assert not And((a | b), (b | c & d)).is_cnf()
+
 
 def test_complete_sum():
     v, w, x, y, z = map(exprvar, 'vwxyz')
@@ -756,3 +788,37 @@ def test_complete_sum():
     cs = ~v&~w&x | v&~w&y | ~v&~w&~z | v&~w&z | ~v&~x&~z | ~v&x&z | v&~x&z | ~w&x&y | ~w&x&z | ~w&y&~z
     assert f.complete_sum().equivalent(cs)
 
+
+if __name__ == '__main__':
+    test_misc()
+    test_issue81()
+    test_expr()
+    test_expr2dimacssat()
+    test_box()
+    test_nor()
+    test_nand()
+    test_onehot0()
+    test_onehot()
+    test_nhot()
+    test_majority()
+    test_achilles_heel()
+    test_mux()
+    test_ops()
+    test_const()
+    test_var()
+    test_comp()
+    test_not()
+    test_or()
+    test_and()
+    test_xor()
+    test_xnor()
+    test_equal()
+    test_unequal()
+    test_implies()
+    test_ite()
+    test_expand()
+    test_satisfy()
+    test_depth()
+    test_nf()
+    test_is_nf()
+    test_complete_sum()

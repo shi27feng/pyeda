@@ -27,6 +27,7 @@ BOOM_PLAS = [
     'bb_50x5x50_20%_7.pla',
 ]
 
+
 def test_espresso():
     assert espresso.FTYPE == 1
     assert espresso.DTYPE == 2
@@ -49,6 +50,7 @@ def test_espresso():
     truthtable2expr(f1).equivalent(f1m)
     truthtable2expr(f2).equivalent(f2m)
 
+
 def test_issue75():
     """Reference: https://github.com/cjdrake/pyeda/issues/75"""
     b, x = map(exprvar, "bx")
@@ -59,16 +61,19 @@ def test_issue75():
     f_out_r, = espresso_exprs(f_out_dnf)
     assert f_out.equivalent(f_out_r)
 
+
 def _do_espresso(fname):
     fpath = os.path.join('thirdparty', 'espresso', 'test', 'bb_all', fname)
     with open(fpath) as fin:
         d = pla.parse(fin.read())
     return espresso.espresso(d['ninputs'], d['noutputs'], d['cover'], intype=d['intype'])
 
+
 def test_boom():
     p = mp.Pool(4)
     # Espresso has an internal 'verify' function
     p.map(_do_espresso, BOOM_PLAS)
+
 
 def test_errors():
     assert_raises(ValueError, espresso_exprs, "bad input")
@@ -95,3 +100,9 @@ def test_errors():
     # expected intype in {f, r, fd, fr, dr, fdr}
     assert_raises(ValueError, espresso.espresso, 2, 2, {((1, 2), (0, 1))}, intype=0)
 
+
+if __name__ == '__main__':
+    test_espresso()
+    test_issue75()
+    test_boom()
+    test_errors()

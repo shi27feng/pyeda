@@ -6,25 +6,27 @@ import random
 
 from nose.tools import assert_raises
 
-from pyeda.boolalg.bfarray import farray, exprvars, uint2exprs, int2exprs, fcat
+from pyeda.boolalg.bfarray import exprvars, uint2exprs, int2exprs, fcat
 from pyeda.logic.addition import (
     ripple_carry_add as rca,
     kogge_stone_add as ksa,
     brent_kung_add as bka,
 )
 
-
 NVECS = 100
 
-def uadd(S, A, B, aval, bval):
-    N = len(A)
-    R = S.vrestrict({A: uint2exprs(aval, N), B: uint2exprs(bval, N)})
-    return R.to_uint()
+
+def uadd(s, a, b, aval, bval):
+    n = len(a)
+    r_ = s.vrestrict({a: uint2exprs(aval, n), b: uint2exprs(bval, n)})
+    return r_.to_uint()
+
 
 def sadd(S, A, B, aval, bval):
     N = len(A)
     R = S.vrestrict({A: int2exprs(aval, N), B: int2exprs(bval, N)})
     return R.to_int()
+
 
 def test_errors():
     A = exprvars('A', 7)
@@ -32,6 +34,7 @@ def test_errors():
 
     for adder in (rca, ksa, bka):
         assert_raises(ValueError, adder, A, B)
+
 
 def test_unsigned_add():
     N = 9
@@ -51,10 +54,11 @@ def test_unsigned_add():
         assert uadd(S, A, B, 2**N-1, 1) == 2**N
 
         # unsigned random vectors
-        for i in range(NVECS):
+        for _ in range(NVECS):
             ra = random.randint(0, 2**N-1)
             rb = random.randint(0, 2**N-1)
             assert uadd(S, A, B, ra, rb) == ra + rb
+
 
 def test_signed_add():
     A = exprvars('A', 8)
@@ -73,10 +77,10 @@ def test_signed_add():
         assert sadd(S, A, B, -64, 64) == 0
 
         # signed random vectors
-        for i in range(NVECS):
-            ra = random.randint(-2**6, 2**6-1) # -64..63
-            rb = random.randint(-2**6, 2**6)   # -64..64
-            assert sadd(S, A, B, ra, rb) == ra + rb
+        for _ in range(NVECS):
+            r_a = random.randint(-2**6, 2**6-1) # -64..63
+            r_b = random.randint(-2**6, 2**6)   # -64..64
+            assert sadd(S, A, B, r_a, r_b) == r_a + r_b
 
         # 64 + 64, overflow
         R = C.vrestrict({A: int2exprs(64, 8), B: int2exprs(64, 8)})
@@ -85,3 +89,8 @@ def test_signed_add():
         R = C.vrestrict({A: int2exprs(-65, 8), B: int2exprs(-64, 8)})
         assert R[7] != R[6]
 
+
+if __name__ == '__main__':
+    test_errors()
+    test_unsigned_add()
+    test_signed_add()

@@ -45,6 +45,7 @@ def test_basic():
     assert expr("Majority(a, b, c)").equivalent(Majority(a, b, c))
     assert expr("AchillesHeel(a, b, c, d)").equivalent(AchillesHeel(a, b, c, d))
 
+
 def test_misc():
     a, b, c = map(exprvar, 'abc')
     assert expr("a & b & c").equivalent(a & b & c)
@@ -60,3 +61,8 @@ def test_misc():
     b_a_0_1 = exprvar(('a', 'b'), (0, 1))
     assert expr("a[0] | b.a | a[0,1] | b.a[0,1]").equivalent(a_0 | b_a | a_0_1 | b_a_0_1)
 
+
+if __name__ == '__main__':
+    test_expr_error()
+    test_basic()
+    test_misc()

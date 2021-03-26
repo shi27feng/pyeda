@@ -24,6 +24,7 @@ BASIC = """
 .e
 """
 
+
 def test_errors():
     # General syntax error
     assert_raises(Error, parse, "foo\nbar\nfiz\nbuz\n")
@@ -37,6 +38,7 @@ def test_errors():
     assert_raises(Error, parse, ".ob a b\n.ob c d\n")
     # .type declared more than once
     assert_raises(Error, parse, ".type f\n.type r\n")
+
 
 def test_basic():
     d = parse(BASIC)
@@ -54,3 +56,7 @@ def test_basic():
         },
     }
 
+
+if __name__ == '__main__':
+    test_errors()
+    test_basic()
