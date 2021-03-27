@@ -72,7 +72,7 @@ def _do_espresso(fname):
 def test_boom():
     p = mp.Pool(4)
     # Espresso has an internal 'verify' function
-    p.map(_do_espresso, BOOM_PLAS)
+    p.imap(_do_espresso, BOOM_PLAS)
 
 
 def test_errors():

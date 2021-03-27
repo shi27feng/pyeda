@@ -29,5 +29,9 @@ if __name__ == '__main__':
         GRIDS = [line.strip() for line in fin]
     with open(top95_solns_txt) as fin:
         SOLNS = [line.strip() for line in fin]
-
-    test_sudoku(SOLVER, GRIDS, SOLNS)
+    params = {
+        "solver": SOLVER,
+        "grids": GRIDS,
+        "solns": SOLNS
+    }
+    test_sudoku(*params)
