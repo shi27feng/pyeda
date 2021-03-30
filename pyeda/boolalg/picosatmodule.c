@@ -137,7 +137,6 @@ _add_clauses(PicoSAT *picosat, PyObject *clauses)
     return true;
 }
 
-
 /*
 ** Add all assumptions to a PicoSAT instance.
 **

@@ -2269,27 +2269,24 @@ REENTER:
 
   add_resolved (ps, learned);
 
-  if (learned)
-    {
+  if (learned){
       ps->ladded++;
       ps->llitsadded += size;
       if (size > 2)
-	{
-	  ps->lladded++;
-	  ps->nlclauses++;
-	  ps->llits += size;
-	}
-    }
-  else
     {
+      ps->lladded++;
+      ps->nlclauses++;
+      ps->llits += size;
+    }
+  } else {
       ps->oadded++;
       if (size > 2)
-	{
-	  ps->loadded++;
-	  ps->noclauses++;
-	  ps->olits += size;
-	}
+    {
+      ps->loadded++;
+      ps->noclauses++;
+      ps->olits += size;
     }
+  }
 
   ps->addedclauses++;
   assert (ps->addedclauses == ps->ladded + ps->oadded);
@@ -2302,8 +2299,7 @@ REENTER:
     {
       sortlits (ps, ps->added, size); 
 
-      if (learned)
-	{
+      if (learned){
 	  if (ps->lhead == ps->EOL)
 	    {
 	      ENLARGE (ps->lclauses, ps->lhead, ps->EOL);

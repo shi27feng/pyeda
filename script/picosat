@@ -14,8 +14,10 @@ from pyeda.parsing import dimacs
 # Return values (standardized by http://www.satcompetition.org):
 UNKNOWN, SATISFIABLE, UNSATISFIABLE = 0, 10, 20
 
+
 class PicosatArgumentParser(argparse.ArgumentParser):
     """Customized PicoSAT argument parser"""
+
     def exit(self, status=0, message=None):
         """Format command-line errors like PicoSAT."""
         if message:
@@ -26,7 +28,9 @@ class PicosatArgumentParser(argparse.ArgumentParser):
         """All parsing errors return UNKNOWN."""
         self.exit(UNKNOWN, message)
 
+
 PARSER = PicosatArgumentParser(description=__doc__)
+
 
 def _nonzero(s):
     """Verify a non-zero input integer."""
@@ -38,6 +42,7 @@ def _nonzero(s):
     if value == 0:
         raise argparse.ArgumentTypeError("zero assumption")
     return value
+
 
 PARSER.add_argument(
     '--version', action='version', version=picosat.VERSION,
@@ -77,6 +82,7 @@ PARSER.add_argument(
     help="CNF input file (default: stdin)"
 )
 
+
 def main():
     opts = PARSER.parse_args()
 
@@ -97,10 +103,10 @@ def main():
     _, nvars, clauses = expr.encode_cnf()
 
     config = {
-        'verbosity' : opts.verbose,
-        'default_phase' : opts.default_phase,
-        'propagation_limit' : opts.propagation_limit,
-        'decision_limit' : opts.decision_limit
+        'verbosity': opts.verbose,
+        'default_phase': opts.default_phase,
+        'propagation_limit': opts.propagation_limit,
+        'decision_limit': opts.decision_limit
     }
 
     try:
@@ -131,6 +137,7 @@ def main():
         print(exc)
         return UNKNOWN
 
+
 def _soln2values(soln):
     """Convert a PicoSAT solution into an array of lit values."""
     values = [i if val > 0 else -i
@@ -141,4 +148,3 @@ def _soln2values(soln):
 
 if __name__ == '__main__':
     sys.exit(main())
-

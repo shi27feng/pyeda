@@ -28,4 +28,4 @@ cover
 .ipynb*
 .vscode/
 .ipynb_checkpoints/
-
+.idea/

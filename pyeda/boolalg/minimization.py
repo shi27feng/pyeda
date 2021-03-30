@@ -8,7 +8,6 @@ Interface Functions:
 * :func:`espresso_tts`
 """
 
-
 # Disable the 'no-name-in-module' error, b/c pylint can't look into C extensions
 # pylint: disable=E0611
 
@@ -19,7 +18,6 @@ from pyeda.boolalg import boolfunc
 from pyeda.boolalg.expr import exprvar, Expression, Or, And
 from pyeda.boolalg.table import TruthTable, PC_ZERO, PC_ONE, PC_DC
 
-
 # ReadTheDocs doesn't build C extensions
 # See http://docs.readthedocs.org/en/latest/faq.html for details
 if os.getenv('READTHEDOCS') == 'True':
@@ -27,7 +25,6 @@ if os.getenv('READTHEDOCS') == 'True':
 else:
     from pyeda.boolalg.espresso import FTYPE, DTYPE, RTYPE
     from pyeda.boolalg.espresso import set_config, espresso
-
 
 CONFIG = dict(
     single_expand=False,
@@ -148,7 +145,7 @@ def espresso_tts(*tts):
 
     set_config(**CONFIG)
 
-    cover = espresso(ninputs, noutputs, cover, intype=FTYPE|DTYPE|RTYPE)
+    cover = espresso(ninputs, noutputs, cover, intype=FTYPE | DTYPE | RTYPE)
     inputs = [exprvar(v.names, v.indices) for v in inputs]
     return _cover2exprs(inputs, noutputs, cover)
 
@@ -170,4 +167,3 @@ def _cover2exprs(inputs, noutputs, cover):
         fs.append(Or(*[And(*term) for term in terms]))
 
     return tuple(fs)
-

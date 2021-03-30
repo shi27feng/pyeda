@@ -10,13 +10,14 @@ import sys
 from pyeda.boolalg import espresso
 from pyeda.parsing import pla
 
-
 PARSER = argparse.ArgumentParser(description=__doc__)
+
 
 class EspressoConfigAction(argparse.Action):
     def __call__(self, parser, namespace, value, option_string=None):
         key, val = (value[1:], False) if value[0] == 'n' else (value, True)
         setattr(namespace, key, val)
+
 
 PARSER.add_argument(
     '-e', dest='ecfg', action=EspressoConfigAction,
@@ -58,6 +59,7 @@ PARSER.add_argument(
 PARSER.add_argument('file', nargs='?', type=argparse.FileType('r'),
                     default=sys.stdin, help="PLA file (default: stdin)")
 
+
 def main():
     opts = PARSER.parse_args()
 
@@ -98,6 +100,6 @@ def main():
 
     return 0
 
+
 if __name__ == '__main__':
     sys.exit(main())
-

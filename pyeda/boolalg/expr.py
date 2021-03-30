@@ -90,7 +90,6 @@ Interface Classes:
     * :class:`DimacsCNF`
 """
 
-
 # Disable 'no-member' error, b/c pylint can't look into C extensions
 # foo bar pylint: disable=E1101
 
@@ -103,17 +102,16 @@ import pyeda.parsing.boolexpr
 from pyeda.boolalg import boolfunc
 from pyeda.util import bit_on, cached_property, clog2
 
-
 # ReadTheDocs doesn't build C extensions
 # See http://docs.readthedocs.org/en/latest/faq.html for details
 if os.getenv('READTHEDOCS') == 'True':
     from unittest.mock import MagicMock
+
     # pylint: disable=C0103
     exprnode = MagicMock()
 else:
     from pyeda.boolalg import exprnode
     from pyeda.boolalg import picosat
-
 
 # existing Literal references
 _LITS = dict()
@@ -190,21 +188,22 @@ def _exprcomp(node):
 
 
 _KIND2EXPR = {
-    exprnode.ZERO : lambda node: Zero,
-    exprnode.ONE  : lambda node: One,
+    exprnode.ZERO: lambda node: Zero,
+    exprnode.ONE: lambda node: One,
 
-    exprnode.COMP : lambda node: _exprcomp(node),
-    exprnode.VAR  : lambda node: _LITS[node.data()],
+    exprnode.COMP: lambda node: _exprcomp(node),
+    exprnode.VAR: lambda node: _LITS[node.data()],
 
-    exprnode.OP_OR   : lambda node: OrOp(node),
-    exprnode.OP_AND  : lambda node: AndOp(node),
-    exprnode.OP_XOR  : lambda node: XorOp(node),
-    exprnode.OP_EQ   : lambda node: EqualOp(node),
+    exprnode.OP_OR: lambda node: OrOp(node),
+    exprnode.OP_AND: lambda node: AndOp(node),
+    exprnode.OP_XOR: lambda node: XorOp(node),
+    exprnode.OP_EQ: lambda node: EqualOp(node),
 
-    exprnode.OP_NOT  : lambda node: NotOp(node),
-    exprnode.OP_IMPL : lambda node: ImpliesOp(node),
-    exprnode.OP_ITE  : lambda node: IfThenElseOp(node),
+    exprnode.OP_NOT: lambda node: NotOp(node),
+    exprnode.OP_IMPL: lambda node: ImpliesOp(node),
+    exprnode.OP_ITE: lambda node: IfThenElseOp(node),
 }
+
 
 def _expr(node):
     """Expression constructor that returns unique atomic nodes."""
@@ -266,7 +265,7 @@ def expr2dimacssat(ex):
     return "p {} {}\n{}".format(fmt, nvars, formula)
 
 
-def _expr2sat(ex, litmap): # pragma: no cover
+def _expr2sat(ex, litmap):  # pragma: no cover
     """Convert an expression to a DIMACS SAT string."""
     if isinstance(ex, Literal):
         return str(litmap[ex])
@@ -489,7 +488,7 @@ def OneHot(*xs, simplify=True, conj=True):
         y = exprnode.and_(*terms)
     else:
         for i, xi in enumerate(xs):
-            zeros = [exprnode.not_(x) for x in xs[:i] + xs[i+1:]]
+            zeros = [exprnode.not_(x) for x in xs[:i] + xs[i + 1:]]
             terms.append(exprnode.and_(xi, *zeros))
         y = exprnode.or_(*terms)
     if simplify:
@@ -562,7 +561,7 @@ def AchillesHeel(*xs, simplify=True):
         fstr = "expected an even number of arguments, got {}"
         raise ValueError(fstr.format(nargs))
     xs = [Expression.box(x).node for x in xs]
-    y = exprnode.and_(*[exprnode.or_(xs[2*i], xs[2*i+1])
+    y = exprnode.and_(*[exprnode.or_(xs[2 * i], xs[2 * i + 1])
                         for i in range(nargs // 2)])
     if simplify:
         y = y.simplify()
@@ -590,7 +589,7 @@ def Mux(fs, sel, simplify=True):
     return _expr(y)
 
 
-def ForAll(vs, ex): # pragma: no cover
+def ForAll(vs, ex):  # pragma: no cover
     """
     Return an expression that means
     "for all variables in *vs*, *ex* is true".
@@ -598,7 +597,7 @@ def ForAll(vs, ex): # pragma: no cover
     return And(*ex.cofactors(vs))
 
 
-def Exists(vs, ex): # pragma: no cover
+def Exists(vs, ex):  # pragma: no cover
     """
     Return an expression that means
     "there exists a variable in *vs* such that *ex* is true".
@@ -886,6 +885,7 @@ class Expression(boolfunc.Function):
             return self
         else:
             return _expr(node)
+
     ### End C API ###
 
     def expand(self, vs=None, conj=False):
@@ -953,7 +953,7 @@ class Expression(boolfunc.Function):
         f = Xor(self, self.box(other))
         return f.satisfy_one() is None
 
-    def to_dot(self, name='EXPR'): # pragma: no cover
+    def to_dot(self, name='EXPR'):  # pragma: no cover
         """Convert to DOT language representation."""
         parts = ['graph', name, '{', 'rankdir=BT;']
         for ex in self.iter_dfs():
@@ -1330,7 +1330,7 @@ class NormalForm:
 
     def reduce(self):
         """Reduce to a canonical form."""
-        support = frozenset(range(1, self.nvars+1))
+        support = frozenset(range(1, self.nvars + 1))
         new_clauses = set()
         for clause in self.clauses:
             vs = list(support - {abs(uniqid) for uniqid in clause})
@@ -1436,22 +1436,21 @@ def _tseitin(ex, auxvarname, auxvars=None):
 
 
 ASTOPS = {
-    'not' : Not,
-    'or' : Or,
-    'and' : And,
-    'xor' : Xor,
-    'equal' : Equal,
-    'implies' : Implies,
-    'ite' : ITE,
+    'not': Not,
+    'or': Or,
+    'and': And,
+    'xor': Xor,
+    'equal': Equal,
+    'implies': Implies,
+    'ite': ITE,
 
     'nor': Nor,
     'nand': Nand,
     'xnor': Xnor,
     'unequal': Unequal,
 
-    'onehot0' : OneHot0,
-    'onehot' : OneHot,
-    'majority' : Majority,
-    'achillesheel' : AchillesHeel,
+    'onehot0': OneHot0,
+    'onehot': OneHot,
+    'majority': Majority,
+    'achillesheel': AchillesHeel,
 }
-
